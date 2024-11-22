@@ -52,20 +52,20 @@
 const { createClient } = require('@supabase/supabase-js')
 const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 
+// handleInserts関数（新しいデータが挿入されたときに呼ばれる関数）を定義
+const handleInserts = (payload) => {
+  // 新しく挿入された行（データ）の情報を表示
+  console.log('New row inserted', payload.new)
+}
+
 // todosテーブルのINSERTイベントを監視するチャネルを作成
 supabase
-  .channel('todos')  // チャネル名を指定（データが来る場所）
-  //public.todosテーブルへのINSERTイベントが発生するたびにhandleInserts関数が実行される
-  .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'todos' }, (payload) => {
-    console.log('New row inserted:', payload) //新しいデータ行が挿入された時の処理
-  })
-  .subscribe()  // サブスクライブしてデータを待機
+  .channel('todos')  // チャネル名を指定
+  // public.todosテーブルへのINSERTイベントが発生するたびにhandleInserts関数が実行される
+  .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'todos' }, handleInserts)
+  .subscribe()  
 ~~~
-
-- supabase Realtime APIの「todosチャネル」を作成　リアルタイムで受け取るデータの対象となるグループ
-- .onメソッドはリアルタイムのイベントをリッスンするための部分。ここで'postgres_changes'イベントに対して特定のDBテーブル（todos）の変更（イベント/insert）を監視
-- todosテーブルに新しい行が挿入されるたびにこのイベントが発火しhandleInserts関数が呼ばれる
-- handleInserts関数は、Insertイベントが発生したときに呼ばれる関数　payload(挿入されたデータ)が引数として渡され、そのデータをconsole.logで出力する
+- todosテーブルに新しい行が挿入されるたびに、handleInserts関数が呼び出され、その中でpayload.newを使って挿入されたデータを表示する処理。
 
 # Realtime APIの使い方
 ## APIの基本的なフロー

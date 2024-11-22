@@ -66,6 +66,15 @@ supabase
   .subscribe()  
 ~~~
 - todosテーブルに新しい行が挿入されるたびに、handleInserts関数が呼び出され、その中でpayload.newを使って挿入されたデータを表示する処理。
+- payload.new（挿入された新しいデータ）の例
+~~~
+{
+  id: 1,                          
+  create_at: '2024-11-20T12:34:56', 
+  title: 'Task1',            
+  user_id: 001                   
+}
+~~~
 
 # Realtime APIの使い方
 ## APIの基本的なフロー
